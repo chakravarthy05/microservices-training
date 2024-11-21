@@ -1,0 +1,160 @@
+server:
+  port: ${PORT:8081}
+#  servlet:
+#    context-path: /swarmhr-gateway
+#management:
+#  security:
+#    enabled: false
+spring:
+  profile: uat
+  application:
+    name: swarmhr-gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+          enabled: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    url: jdbc:mysql://35.188.19.158/ebdb
+    username: uat-user
+    password: $w@rmu5er
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 5
+      maximum-pool-size: 12
+      idle-timeout: 300000
+      max-lifetime: 1200000
+  jpa:
+    properties:
+      hibernate:
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        ddl: none
+        format_sql: true
+        show_sql: true
+
+logging:
+  file: /apps/opt/application/runnable/Swarmhr-Nextgen/SwarmHRGateway/logs/SwarmHRGateway.log
+  level:
+    org.springframework.web: INFO
+    com.swarmhr.user: DEBUG
+    org.hibernate: ERROR
+
+google:
+  cloud: 
+    datastore: 
+      config-file-name: D:/ATS/uat/testswarmhr-uat-datastore.json 
+    storage:
+      config-file-name: D:/ATS/uat/testswarmhr-uat.json
+    projectId: tws-swarm-uat-portal
+
+swarmhr:
+  site-url: https://uat-env.swarmhr.com
+
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_URI:http://localhost:8761}
+    registerWithEureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 300
+
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  ignored-headers:
+  - Access-Control-Allow-Credentials
+  - Access-Control-Allow-Origin
+  prefix: /api
+  routes:
+    swarmhr-admin:
+      path: /swarmhr-admin/**
+      service-id: swarmhr-admin-service
+#      url: http://localhost:9090/swarmhr-admin
+    swarmhr-user:
+      path: /swarmhr-user/**
+      service-id: swarmhr-user-service
+#     url: http://localhost:8899/swarmhr-user
+    swarmhr-manager:
+      path: /swarmhr-manager/**
+      service-id: swarmhr-manager-service
+    swarmhr-common:
+      path: /swarmhr-common/**
+      service-id: swarmhr-common-service
+    swarmhr-invoice:
+      path: /swarmhr-invoice/**
+      service-id: swarmhr-invoice-service
+    swarmhr-document:
+      path: /swarmhr-document/**
+      service-id: swarmhr-document-service
+    swarmhr-spadmin:
+      path: /swarmhr-spadmin/**
+      service-id: swarmhr-spadmin-service
+    swarmhr-reports:
+      path: /swarmhr-reports/**
+      service-id: swarmhr-reports-service
+    interview:
+      path: /interviews/**
+      service-id: interview-service
+    immigration:
+      path: /immigration/**
+      service-id: immigration-service
+    swarmhr-taskboard:
+      path: /swarmhr-taskboard/**
+      service-id: swarmhr-taskboard-service
+
+ribbon:
+  eureka:
+    enabled: false
+    
+swarmhr-admin-service:
+  ribbon:
+    listOfServers: localhost:9090
+    ReadTimeout: 120000
+swarmhr-user-service:
+  ribbon:
+    listOfServers: localhost:8899
+    ReadTimeout: 2500000
+swarmhr-manager-service:
+  ribbon:
+    listOfServers: localhost:8889
+    ReadTimeout: 60000
+swarmhr-document-service:
+  ribbon:
+    listOfServers: localhost:8082
+    ReadTimeout: 60000
+swarmhr-common-service:
+  ribbon:
+    listOfServers: localhost:8890
+    ReadTimeout: 60000
+swarmhr-invoice-service:
+  ribbon:
+    listOfServers: localhost:8891
+    ReadTimeout: 1200000
+swarmhr-spadmin-service:
+  ribbon:
+    listOfServers: localhost:8892
+    ReadTimeout: 120000
+swarmhr-reports-service:
+  ribbon:
+    listOfServers: localhost:8893
+    ReadTimeout: 80000000
+interview-service:
+  ribbon:
+    listOfServers: localhost:9091
+    ReadTimeout: 120000
+immigration-service:
+  ribbon:
+    listOfServers: localhost:9092
+    ReadTimeout: 120000 
+swarmhr-taskboard-service:
+  ribbon:
+    listOfServers: localhost:9093
+    ReadTimeout: 120000      
+#####################################
+#### https://github.com/Baeldung/spring-security-oauth/blob/master/oauth-zuul-gateway/src/main/resources/application.yml    
+#####################################

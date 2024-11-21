@@ -1,0 +1,68 @@
+server:
+  port: ${PORT:8081}
+#  servlet:
+#    context-path: /swarmhr-gateway
+#management:
+#  security:
+#    enabled: false
+spring:
+  profile: dev
+  application:
+    name: swarmhr-gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+          enabled: true
+  datasource:
+    url: jdbc:mysql://35.188.19.158/ebdb
+    username: uat-user
+    password: $w@rmu5er
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 5
+      maximum-pool-size: 12
+      idle-timeout: 300000
+      max-lifetime: 1200000
+  jpa:
+    properties:
+      hibernate:
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        ddl: none
+        format_sql: true
+        show_sql: true
+
+
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_URI:http://localhost:8761}
+    registerWithEureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 300
+
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  prefix: /api
+  routes:
+    swarmhr-admin:
+      path: /swarmhr-admin/**
+      service-id: swarmhr-admin-service
+#      url: http://localhost:9090/swarmhr-admin
+    swarmhr-user:
+      path: /swarmhr-user/**
+      service-id: swarmhr-user-service
+#     url: http://localhost:8899/swarmhr-user
+ribbon:
+  eureka:
+    enabled: false
+    
+swarmhr-admin-service:
+  ribbon:
+    listOfServers: localhost:9090
+swarmhr-user-service:
+  ribbon:
+    listOfServers: localhost:8899
+#   ReadTimeout: 60000
